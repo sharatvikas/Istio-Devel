@@ -14,10 +14,11 @@ export PATH="$PATH:/home/k8suser/istio-1.0.5/bin"
 unset HTTP_PROXY
 unset HTTPS_PROXY
 
-# Make Changes to install/kubernetes/helm/istio/values.yaml
+# Make Changes to istio-1.0.5/install/kubernetes/helm/istio/values.yaml
 # CHange IngressGateway from LoadBalancer -> NodePort
 # Enable All Addons like Telemetry, ServiceGraph, Kiali, Jaeger
 # Grafana, Prometheus & Disable Galley
+cd istio-1.0.5
 vi install/kubernetes/helm/istio/values.yaml
 
 # Create a Helm Template
@@ -39,13 +40,27 @@ watch -n 1 kubectl get pods -n istio-system
 # Change Service Types like Kiali, ServiceGraph & Jaeger-query to NodePort
 # This Allows you to see the Dashboard for these Services 
 
+#Change Type CLusterIP to NodePort
 kubectl edit svc kiali -n istio-system
 
+#Change Type CLusterIP to NodePort
 kubectl edit svc servicegraph -n istio-system
 
+#Change Type CLusterIP to NodePort
 kubectl edit svc jaeger-query -n istio-system
 
 #Check your Istio-System Pods & Services to Verify All Istio Enabled Services
 kubectl get svc -n istio-system
 
+# Grafana & Prometheus have a Default NodePort Set in the Istio-IngressGateway
+
+
 ############ Istio Install Complete ##############
+
+
+
+############ Istio Uninstall Steps ################
+
+#Terminate all the resources using the yaml used to install
+kubectl delete -f $HOME/istio.yaml
+
